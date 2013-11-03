@@ -2,6 +2,7 @@
 ## Title: Probably [|cff9482C9Hysteria|r]
 ## Notes: A ProbablyEngine Custom Profile Pack
 ## Author: Elizabeth "Mentally" Truehearth, Kink
+## Version 5.4.1.1
 ## Dependencies: Probably
 
 # Rotations
@@ -9,3 +10,5 @@ rotations\priest\rotation.lua
 
 # Extra Files
 libs\functions.lua
+libs\listener.lua
+libs\spellTable.lua
