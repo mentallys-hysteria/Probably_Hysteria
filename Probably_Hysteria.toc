@@ -1,0 +1,11 @@
+## Interface: 50400
+## Title: Probably [|cff9482C9Hysteria|r]
+## Notes: A ProbablyEngine Custom Profile Pack
+## Author: Elizabeth "Mentally" Truehearth, Kink
+## Dependencies: Probably
+
+# Rotations
+rotations\priest\rotation.lua
+
+# Extra Files
+libs\functions.lua
