@@ -66,11 +66,19 @@ end
 function cancelChannel(spell)
 	local unitChannel = UnitChannelInfo("player")
 	
-	if unitChannel and (unitChannel == GetSpellInfo(MF) or unitChannel == GetSpellInfo(MFI)) then
-		if mindFlay.curTicks < mindFlay.maxTicks - 1 or insanity.curTicks < insanity.maxTicks - 1 then
-			CastSpellByName(GetSpellInfo(spell))
-			return false
+	-- Hmm, no spell given ...
+	if not spell or spell == nil then return false end
+	
+	-- Some spells should be cast immediately!
+	if spell == MB or spell == SWD then CastSpellByName(GetSpellInfo(spell)) return true end
+	
+	-- Cancel channels appropriately.
+	if unitChannel then
+		if unitChannel == GetSpellInfo(MF) then
+			if mindFlay.curTicks >= mindFlay.maxTicks - 1 then CastSpellByName(GetSpellInfo(spell)) return true end
 		end
-	end
-	return true
+		if unitChannel == GetSpellInfo(MFI) then
+			if insanity.curTicks >= insanity.maxTicks - 1 then CastSpellByName(GetSpellInfo(spell)) return true end
+		end
+	else return true end
 end

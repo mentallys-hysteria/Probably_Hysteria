@@ -10,6 +10,6 @@
         ==============================================================
         Updated: 12:40 AM 03.11.2013
 ]]
-ProbablyEngine.rotation.register_custom(258, "HysteriaDestruction", {
+ProbablyEngine.rotation.register_custom(258, "Hysteria Destruction", {
         -- Rotation
 })
