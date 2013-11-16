@@ -10,159 +10,128 @@
 	==============================================================
 ]]
 ProbablyEngine.rotation.register_custom(258, "Hysteria Priest", {
-	-- In-combat buffing
-	{"Inner Fire", "!player.buff(Inner Fire)" },
-	{"Power Word: Fortitude", "@hysteria.checkRaidBuff(2)"},
-	{"Shadowform", "!player.buff(Shadowform)" },
-	{"Power Word: Shield", {
-		(function()if IsPlayerSpell(64129) then return true else return false end end),
-		"player.moving",
-	}},
+	-- In-combat rebuffing
+	{"588", "!player.buff(588)" },
+	{"21562", "@hysteria.checkRaidBuff(2)"},
+	{"15473", "!player.buff(15473)" },
 	
-	-- Support Abilities
-	{"Vampiric Embrace", {
-		"player.health <= 40",
-		"@hysteria.immunities",
-		"player.shadoworbs = 3"
-	}},
-	{"!/use Healthstone", "player.health <= 40"},
-	{"Desperate Prayer", {
-		"player.health <= 40",
-		"player.spell(19236).exists"
-	}},
-	
-	-- Defensive Abilities
-	{"Dispersion", {
-		"modifier.rshift",
-		"!spell.cooldown(Dispersion)",
-		"@hysteria.cancelChannel(Disp)"
-	}},
-	{"Mass Dispel", {
-		"modifier.ralt",
-		"!player.moving",
-		"!spell.cooldown(Mass Dispel)",
-		"@hysteria.cancelChannel(MDisp)"
-	},"ground"},
-	{"Fade", "player.threat > 95"},
-	
-	-- Cooldowns
+	-- Available Cooldowns
 	{{
-		{"Mindbender",{
-			"player.spell(123040).exists",
-			"@hysteria.cancelChannel(123040)"}},
-		{"Shadowfiend",{
-			"player.spell(34433).exists",
-			"@hysteria.cancelChannel(34433)"}},
-		{"Lifeblood",{
-			"player.spell(121279).exists",
-			"@hysteria.cancelChannel(121279)"}},
-		{"Berserking",{
-			"player.spell(26297).exists",
-			"@hysteria.cancelChannel(26297)"}},
-		{"Power Infusion",{
-			"player.spell(10060).exists",
-			"@hysteria.cancelChannel(10060)"}},
-		{"#gloves"},
+		{"34433", "@hysteria.cancelChannel(123040)"},
+		{"121279", {"player.spell(121279).exists", "@hysteria.cancelChannel(121279)"}},
+		{"26297", {"player.spell(26297).exists", "@hysteria.cancelChannel(26297)"}},
+		{"10060", {"player.spell(10060).exists", "@hysteria.cancelChannel(10060)"}},
+		{"#gloves"}
 	},{
 		"modifier.cooldowns",
 		"@hysteria.immunities"
 	}},
 	
-	-- Priority List
-	{"Shadow Word: Death", {
+	-- Single target rotation
+	{"32379", {
 		"target.health <= 20",
-		"player.spell(Shadow Word: Death).casted < 1",
+		"!modifier.last(32379)",
 		"@hysteria.cancelChannel(SWD)"
 	}},
-	{"Devouring Plague", {
+	{"2944", {
 		"target.health <= 20",
-		"player.shadoworbs < 3",
-		"player.spell.cooldown(Shadow Word: Death) < 1.5",
+		"player.shadoworbs = 3",
+		"player.spell(32379).cooldown < 1.5",
 		"@hysteria.cancelChannel(DP)"
 	}},
-	{"Devouring Plague", {
+	{"2944", {
 		"target.health <= 20",
-		"player.shadoworbs < 3",
-		"player.spell.cooldown(Mind Blast) < 1.5",
+		"player.shadoworbs = 3",
+		"player.spell(8092).cooldown < 1.5",
 		"@hysteria.cancelChannel(DP)"
 	}},
-	{"Mind Blast", {"@hysteria.cancelChannel(MB)","!player.moving"}},
-	{"Mind Blast", {"player.buff(Divine Insight)","@hysteria.cancelChannel(MB)"}},
-	{"Shadow Word: Death", {
-		"target.health <= 20",
-		"!target.debuff(Devouring Plague)",
-		"player.spell(Shadow Word: Death).casted < 1",
-		"@hysteria.cancelChannel(SWD)"
-	}},
-	{"Mind Flay", {
+	{"8092", {
 		"!player.moving",
+		"@hysteria.cancelChannel(MB)"
+	}},
+	{"8092", {
+		"player.buff(124430)",
+		"@hysteria.cancelChannel(MB)"
+	}},
+	--{"pause", "player.spell(8092).cooldown < 0.5"},
+	{"32379", {
+		"target.health <= 20",
+		"!modifier.last(32379)",
+		(function()
+			if IsPlayerSpell(139139) then
+				if UnitDebuff("target",GetSpellInfo(DP),"PLAYER") then return false else return true end
+			else return true end end),
+		"@hysteria.cancelChannel(SWD)"
+	}},
+	{"15407", {
+		"!player.moving",
+		"target.debuff(2944)",
 		"player.spell(139139).exists",
-		"target.debuff(Devouring Plague)",
 		"@hysteria.cancelChannel(MF)"
 	}},
-	{"Shadow Word: Pain", {
-		"!target.debuff(Shadow Word: Pain)",
+	{"589", {
+		"!target.debuff(589)",
 		"@hysteria.cancelChannel(SWP)"
 	}},
-	{"Vampiric Touch", {
+	{"34914", {
 		"!player.moving",
-		"player.spell(Vampiric Touch).casted < 1",
-		"!target.debuff(Vampiric Touch)",
+		"!target.debuff(34914)",
+		"!modifier.last(34914)",
 		"@hysteria.cancelChannel(VT)"
 	}},
-	{"Shadow Word: Pain", {
+	{"589", {
 		(function()return hysteria.calculateDot(SWP, "target") end),
 		"@hysteria.cancelChannel(SWP)"
 	}},
-	{"Vampiric Touch", {
+	{"34914", {
 		"!player.moving",
-		"player.spell(Vampiric Touch).casted < 1",
+		"!modifier.last(34914)",
 		(function()return hysteria.calculateDot(VT, "target") end),
 		"@hysteria.cancelChannel(VT)"
 	}},
-	{"Devouring Plague", {
+	{"2944", {
 		"player.shadoworbs = 3",
 		(function()return hysteria.calculateDot(DP, "target") end),
 		"@hysteria.cancelChannel(DP)"
 	}},
-	{"Mind Spike", {
+	{"73510", {
 		"player.spell(109186).exists",
-		"player.buff(Surge of Darkness).count = 2",
+		"player.buff(87160).count = 2",
 		"@hysteria.cancelChannel(MS)"
 	}},
-	{"Halo", {
+	{"120644", {
 		"player.spell(120517).exists",
-		(function()return hysteria.talentCheck(139139, "target") end),
-		"@hysteria.cancelChannel(DarkHalo)"
+		(function()
+			if IsPlayerSpell(139139) then
+				if UnitDebuff("target",GetSpellInfo(DP),"PLAYER") then return false else return true end
+			else return true end end),
+		"@hysteria.cancelChannel(Halo)"
 	}},
-	{"Cascade", {
+	{"121135", {
 		"player.spell(121135).exists",
-		(function()return hysteria.talentCheck(139139, "target") end),
-		"@hysteria.cancelChannel(DCascade)"
+		(function()
+			if IsPlayerSpell(139139) then
+				if UnitDebuff("target",GetSpellInfo(DP),"PLAYER") then return false else return true end
+			else return true end end),
+		"@hysteria.cancelChannel(Cascade)"
 	}},
-	{"Divine Star", {
+	{"110744", {
 		"player.spell(110744).exists",
-		(function()return hysteria.talentCheck(139139, "target") end),
-		"@hysteria.cancelChannel(DStar)"
+		(function()
+			if IsPlayerSpell(139139) then
+				if UnitDebuff("target",GetSpellInfo(DP),"PLAYER") then return false else return true end
+			else return true end end),
+		"@hysteria.cancelChannel(Star)"
 	}},
-	{"Mind Spike", {
+	{"73510", {
 		"player.spell(109186).exists",
-		"player.buff(Surge of Darkness).count = 1",
+		"player.buff(87160).count = 1",
 		"@hysteria.cancelChannel(MS)"
 	}},
-	{"Mind Flay", {"!player.moving","@hysteria.cancelChannel(MF)"}},
-	
-	-- Movement
-	{"Shadow Word: Death", {
-		"player.moving",
-		"target.health <= 20",
-		"!spell.cooldown(Shadow Word: Death)"
-	}},
-	{"Mind Blast", {"player.moving", "player.buff(Divine Insight)"}},
-	{"Shadow Word: Pain", {"player.moving", "player.mana > 75"}}
+	{"15407", "@hysteria.cancelChannel(MF)"}
 }, {
 	-- Out of Combat buffing
-	{"Inner Fire", "!player.buff(Inner Fire)" },
-	{"Power Word: Fortitude", "@hysteria.checkRaidBuff(2)"},
-	{"Shadowform", "!player.buff(Shadowform)" },
+	{"588", "!player.buff(588)" },
+	{"21562", "@hysteria.checkRaidBuff(2)"},
+	{"15473", "!player.buff(15473)" },
 })

@@ -76,10 +76,16 @@ end
 -- Cancel a Channeled Spell
 function hysteria.cancelChannel(spell)
 	local unitChannel = UnitChannelInfo("player")
-	local castingTime = select(7,GetSpellInfo(spell))
+	local castingTime = (select(7,GetSpellInfo(spell)))
+	local exists = ProbablyEngine.dsl.get("spell.exists")("player",spell)
 	
 	-- Hmm, no spell given ...
 	if not spell then return false end
+	
+	-- Not yet learned the current spell.
+	if not exists or exists == false then return false end
+	
+	--if spell ~= MFI and UnitChannelInfo("player") == GetSpellInfo(MFI)
 	
 	-- Some spells should be cast immediately!
 	if spell == MB or spell == SWD or spell == MDisp or spell == Disp then CastSpellByName(GetSpellInfo(spell)) return true end
@@ -92,6 +98,7 @@ function hysteria.cancelChannel(spell)
 		if unitChannel == GetSpellInfo(MFI) then
 			if insanity.curTicks >= insanity.maxTicks - 1 then CastSpellByName(GetSpellInfo(spell)) return true end
 		end
+		return false
 	else return true end
 end
 
@@ -99,19 +106,6 @@ end
 function hysteria.checkRaidBuff(index)
 	if not GetRaidBuffTrayAuraInfo(index) then return true end
 	return false
-end
-
--- Talent check
-function hysteria.talentCheck(talentID, unit)
-	if not unit then return false end
-	if not talentID then return false end
-	
-	if IsPlayerSpell(talentID) then
-		-- Solace and Insanity (Shadow)
-		if talentID == 139139 then
-			if UnitDebuffID(unit,2944,"PLAYER") then return false else return true end
-		end
-	else return false end
 end
 
 -- Calculate DOT power returns
@@ -255,7 +249,7 @@ function hysteria.calculateDot(spell, unit)
 						return false
 					else
 						if power > tracker[i].swpPower then
-							if (added_ticks >= remaining_ticks) or hysteria.tempBuffs(tick_every+1) then return true else return false end
+							if (added_ticks >= remaining_ticks) or hysteria.tempBuffs(tick_every+2) then return true else return false end
 						end
 						if shadowWordPain - GetTime() < tick_every+1 then return true else return false end
 					end
