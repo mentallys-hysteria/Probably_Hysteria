@@ -43,65 +43,6 @@ function hysteria.Round(number, decimal)
 	return math.floor(number * multiplier + 0.5) / multiplier
 end
 
--- Boss Events
-function hysteria.immunities(unit)
-	-- Detect immunity events
-	if UnitBuffID(unit, 116994)
-		or UnitBuffID(unit, 122540)
-		or UnitBuffID(unit, 123250)
-		or UnitBuffID(unit, 106062)
-		or UnitBuffID(unit, 110945)
-		or UnitBuffID(unit, 143593)
-		or UnitBuffID(unit, 143574)
-	then return false else return true end
-end
-
-function hysteria.interrupts(unit)	
-	-- Track Channels/Casts
-	if UnitCastingInfo(unit) then spell = UnitCastingInfo(unit) end
-	if UnitChannelInfo(unit) then spell = UnitChannelInfo(unit) end
-
-	-- Detect interrupt events
-	if spell and (spell == GetSpellInfo(138763)
-		or spell == GetSpellInfo(137457)
-		or spell == GetSpellInfo(143343)) then
-			if UnitCastingInfo("player") or UnitChannelInfo("player") then
-				RunMacroText("/stopcasting")
-				return false
-			end
-	end
-	return true
-end
-
--- Cancel a Channeled Spell
-function hysteria.cancelChannel(spell)
-	local unitChannel = UnitChannelInfo("player")
-	local castingTime = (select(7,GetSpellInfo(spell)))
-	local exists = ProbablyEngine.dsl.get("spell.exists")("player",spell)
-	
-	-- Hmm, no spell given ...
-	if not spell then return false end
-	
-	-- Not yet learned the current spell.
-	if not exists or exists == false then return false end
-	
-	--if spell ~= MFI and UnitChannelInfo("player") == GetSpellInfo(MFI)
-	
-	-- Some spells should be cast immediately!
-	if spell == MB or spell == SWD or spell == MDisp or spell == Disp then CastSpellByName(GetSpellInfo(spell)) return true end
-	
-	-- Cancel channels appropriately.
-	if unitChannel then
-		if unitChannel == GetSpellInfo(MF) then
-			if mindFlay.curTicks >= mindFlay.maxTicks - 1 then CastSpellByName(GetSpellInfo(spell)) return true end
-		end
-		if unitChannel == GetSpellInfo(MFI) then
-			if insanity.curTicks >= insanity.maxTicks - 1 then CastSpellByName(GetSpellInfo(spell)) return true end
-		end
-		return false
-	else return true end
-end
-
 -- Check for a raid buff
 function hysteria.checkRaidBuff(index)
 	if not GetRaidBuffTrayAuraInfo(index) then return true end
@@ -295,6 +236,56 @@ function hysteria.calculateDot(spell, unit)
 			if devouringPlague - GetTime() <= tick_every then return true else return false end
 		else return true end
 	end
+end
+
+function hysteria.validate(spell, unit)
+	local unitCasting = UnitCastingInfo(unit)
+	local playerChannel = UnitChannelInfo("player")
+	local playerCasting = UnitCastingInfo("player")
+	local castingTime = (select(7,GetSpellInfo(spell)))
+	local exists = ProbablyEngine.dsl.get("spell.exists")("player",spell)
+	
+	-- Sanity checks
+	if not spell then return false end
+	if not exists then return false end
+	if not unit then return false end
+	if not UnitExists(unit) then return false end
+	
+	-- Detect enemy immunities
+	if UnitBuffID(unit, 116994)
+		or UnitBuffID(unit, 122540)
+		or UnitBuffID(unit, 123250)
+		or UnitBuffID(unit, 106062)
+		or UnitBuffID(unit, 110945)
+		or UnitBuffID(unit, 143593)
+		or UnitBuffID(unit, 143574)
+	then return false end
+	
+	-- Detect interrupt/spell-lock
+	if unitCasting and (unitCasting == GetSpellInfo(138763) or unitCasting == GetSpellInfo(137457) or unitCasting == GetSpellInfo(143343)) then
+		if playerChannel or playerCasting then
+			RunMacroText("/stopcasting")
+			return false
+		end
+		return false
+	end
+	
+	-- Priests are a royal pain in the ass...
+	if select(2,UnitClass("player")) == "PRIEST" then
+		-- Some spells have a higher priority, cancel right away
+		if spell == MB or spell == SWD or spell == MDisp or spell == Disp then CastSpellByName(GetSpellInfo(spell)) return true end
+		
+		-- Otherwise, interrupt channels after a tick
+		if playerChannel then
+			if playerChannel == GetSpellInfo(MF) then
+				if mindFlay.curTicks >= mindFlay.maxTicks - 1 then CastSpellByName(GetSpellInfo(spell)) return true end
+			end
+			if playerChannel == GetSpellInfo(MFI) then
+				if insanity.curTicks >= insanity.maxTicks - 1 then CastSpellByName(GetSpellInfo(spell)) return true end
+			end
+			return false
+		else return true end
+	else return true end
 end
 
 -- Register library
