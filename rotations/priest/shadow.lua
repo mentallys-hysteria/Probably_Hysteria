@@ -110,91 +110,42 @@ ProbablyEngine.rotation.register_custom(258, "Hysteria Priest", {
 		"!modifier.last(34914)",
 		"@hysteria.validate(VT, 'target')"
 	}},
-	{"589", {
-		(function()return hysteria.calculateDot(SWP, "target") end),
-		"@hysteria.validate(SWP, 'target')"
-	}},
-	{"34914", {
-		"!player.moving",
-		"!modifier.last(34914)",
-		(function()return hysteria.calculateDot(VT, "target") end),
-		"@hysteria.validate(VT, 'target')"
-	}},
-	-------------------- BOSS DOTTING --------------------
-	{"589", {
-		"modifier.bossDotting",
-		(function()return hysteria.calculateDot(SWP, "boss1") end),
-		"@hysteria.validate(SWP, 'boss1')"
-	}, "boss1"},
-	{"34914", {
-		"!player.moving",
-		"modifier.bossDotting",
-		"!modifier.last(34914)",
-		(function()return hysteria.calculateDot(VT, "boss1") end),
-		"@hysteria.validate(VT, 'boss1')"
-	}, "boss1"},
-	{"589", {
-		"modifier.bossDotting",
-		(function()return hysteria.calculateDot(SWP, "boss2") end),
-		"@hysteria.validate(SWP, 'boss2')"
-	}, "boss2"},
-	{"34914", {
-		"!player.moving",
-		"modifier.bossDotting",
-		"!modifier.last(34914)",
-		(function()return hysteria.calculateDot(VT, "boss2") end),
-		"@hysteria.validate(VT, 'boss2')"
-	}, "boss2"},
-	{"589", {
-		"modifier.bossDotting",
-		(function()return hysteria.calculateDot(SWP, "boss3") end),
-		"@hysteria.validate(SWP, 'boss3')"
-	}, "boss3"},
-	{"34914", {
-		"!player.moving",
-		"modifier.bossDotting",
-		"!modifier.last(34914)",
-		(function()return hysteria.calculateDot(VT, "boss3") end),
-		"@hysteria.validate(VT, 'boss3')"
-	}, "boss3"},
-	{"589", {
-		"modifier.bossDotting",
-		(function()return hysteria.calculateDot(SWP, "boss4") end),
-		"@hysteria.validate(SWP, 'boss4')"
-	}, "boss4"},
-	{"34914", {
-		"!player.moving",
-		"modifier.bossDotting",
-		"!modifier.last(34914)",
-		(function()return hysteria.calculateDot(VT, "boss4") end),
-		"@hysteria.validate(VT, 'boss4')"
-	}, "boss4"},
-	-------------------- BOSS DOTTING --------------------
-	-------------------- MULTIDOTTING --------------------
-	{"589", {
-		"modifier.multitarget",
-		(function()return hysteria.calculateDot(SWP, "focus") end),
-		"@hysteria.validate(SWP, 'focus')"
-	}, "focus"},
-	{"34914", {
-		"!player.moving",
-		"modifier.multitarget",
-		"!modifier.last(34914)",
-		(function()return hysteria.calculateDot(VT, "focus") end),
-		"@hysteria.validate(VT, 'focus')"
-	}, "focus"},
-	{"589", {
-		"modifier.multitarget",
-		(function()return hysteria.calculateDot(SWP, "mouseover") end),
-		"@hysteria.validate(SWP, 'mouseover')"
-	}, "mouseover"},
-	{"34914", {
-		"!player.moving",
-		"modifier.multitarget",
-		"!modifier.last(34914)",
-		(function()return hysteria.calculateDot(VT, "mouseover") end),
-		"@hysteria.validate(VT, 'mouseover')"
-	}, "mouseover"},
+	{{
+          { "589",{ "!modifier.last(589)", "@hysteria.calculateDot(589, 'target')" }},
+          { "34914",{ "!modifier.last(34914)", "@hysteria.calculateDot(34914, 'target')" }},	
+        },{ 
+           "@hysteria.validate(VT, 'target')",
+           "!player.moving"
+        }},
+        -------------------- BOSS DOTTING --------------------
+        {{
+          { "589",{ "!modifier.last(589)", "@hysteria.calculateDot(SWP, 'boss1')", "boss1" }},
+          { "34914",{ "!modifier.last(34914)", "@hysteria.calculateDot(VT, 'boss1')", "boss1" }},
+          { "589",{ "!modifier.last(589)", "@hysteria.calculateDot(SWP, 'boss2')", "boss2" }},
+          { "34914",{ "!modifier.last(34914)", "@hysteria.calculateDot(VT, 'boss2')", "boss2" }},
+          { "589",{ "!modifier.last(589)", "@hysteria.calculateDot(SWP, 'boss3')", "boss3" }},
+          { "34914",{ "!modifier.last(34914)", "@hysteria.calculateDot(VT, 'boss3')", "boss3" }},
+          { "589",{ "!modifier.last(589)", "@hysteria.calculateDot(SWP, 'boss4')", "boss4" }},
+          { "34914",{ "!modifier.last(34914)", "@hysteria.calculateDot(VT, 'boss4')", "boss4" }},
+          { "589",{ "!modifier.last(589)","@hysteria.calculateDot(SWP, 'boss5')", "boss5" }},
+          { "34914",{ "!modifier.last(34914)", "@hysteria.calculateDot(VT, 'boss5')", "boss5" }},
+        },{ 
+           "@hysteria.validate(VT, 'Multi')"
+           "!player.moving",
+           "toggle.bossDotting"
+        }},
+        -------------------- BOSS DOTTING --------------------
+        -------------------- MULTIDOTTING --------------------
+        {{
+          { "589",{ "!modifier.last(589)", "@hysteria.calculateDot(589, 'mouseover')", "mouseover" }},
+          { "34914",{ "!modifier.last(34914)", "@hysteria.calculateDot(34914, 'mouseover')", "mouseover" }},
+          { "589",{ "!modifier.last(589)", "@hysteria.calculateDot(589, 'focus')", "focus" }},
+          { "34914",{ "!modifier.last(34914)", "@hysteria.calculateDot(34914, 'focus')", "focus" }},
+        },{ 
+            "@hysteria.validate(VT, 'Multi')"
+            "!player.moving",
+            "modifier.multitarget"
+        }},
 	-------------------- MULTIDOTTING --------------------
 	{"2944", {
 		"player.shadoworbs = 3",
