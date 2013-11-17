@@ -279,6 +279,12 @@ function hysteria.validate(spell, unit)
 	
 	    -- Priests are a royal pain in the ass...
 	    if select(2,UnitClass("player")) == "PRIEST" then
+			-- Don't cancel Mind Sear
+			if UnitChannelInfo("player") == GetSpellInfo(MSear) then
+				if spell == MSear then CastSpellByName(GetSpellInfo(MSear)) return true
+				else return false end
+			end
+			
 		   -- Some spells have a higher priority, cancel right away
 		   if spell == MB or spell == SWD or spell == MDisp or spell == Disp then CastSpellByName(GetSpellInfo(spell)) return true end
 		

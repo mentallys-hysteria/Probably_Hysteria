@@ -59,6 +59,9 @@ ProbablyEngine.rotation.register_custom(258, "Hysteria Priest", {
 		{"#gloves"}
 	}, "modifier.cooldowns"},
 	
+	-- Aoe Rotation
+	{"48045", {"modifier.lshift", "@hysteria.validate(MSear, 'target')"}},
+	
 	-- Single target rotation
 	{"32379", {
 		"target.health <= 20",
@@ -75,6 +78,11 @@ ProbablyEngine.rotation.register_custom(258, "Hysteria Priest", {
 		"target.health <= 20",
 		"player.shadoworbs = 3",
 		"player.spell(8092).cooldown < 1.5",
+		"@hysteria.validate(DP, 'target')"
+	}},
+	{"2944", {
+		"player.shadoworbs = 3",
+		"@hysteria.calculateDot(DP, 'target')",
 		"@hysteria.validate(DP, 'target')"
 	}},
 	{"8092", {
@@ -111,47 +119,42 @@ ProbablyEngine.rotation.register_custom(258, "Hysteria Priest", {
 		"@hysteria.validate(VT, 'target')"
 	}},
 	{{
-          { "589",{ "!modifier.last(589)", "@hysteria.calculateDot(589, 'target')" }},
-          { "34914",{ "!modifier.last(34914)", "@hysteria.calculateDot(34914, 'target')" }},	
-        },{ 
-           "@hysteria.validate(VT, 'target')",
-           "!player.moving"
-        }},
-        -------------------- BOSS DOTTING --------------------
-        {{
-          { "589",{ "!modifier.last(589)", "@hysteria.calculateDot(SWP, 'boss1')", "boss1" }},
-          { "34914",{ "!modifier.last(34914)", "@hysteria.calculateDot(VT, 'boss1')", "boss1" }},
-          { "589",{ "!modifier.last(589)", "@hysteria.calculateDot(SWP, 'boss2')", "boss2" }},
-          { "34914",{ "!modifier.last(34914)", "@hysteria.calculateDot(VT, 'boss2')", "boss2" }},
-          { "589",{ "!modifier.last(589)", "@hysteria.calculateDot(SWP, 'boss3')", "boss3" }},
-          { "34914",{ "!modifier.last(34914)", "@hysteria.calculateDot(VT, 'boss3')", "boss3" }},
-          { "589",{ "!modifier.last(589)", "@hysteria.calculateDot(SWP, 'boss4')", "boss4" }},
-          { "34914",{ "!modifier.last(34914)", "@hysteria.calculateDot(VT, 'boss4')", "boss4" }},
-          { "589",{ "!modifier.last(589)","@hysteria.calculateDot(SWP, 'boss5')", "boss5" }},
-          { "34914",{ "!modifier.last(34914)", "@hysteria.calculateDot(VT, 'boss5')", "boss5" }},
-        },{ 
-           "@hysteria.validate(VT, 'Multi')"
-           "!player.moving",
-           "toggle.bossDotting"
-        }},
-        -------------------- BOSS DOTTING --------------------
-        -------------------- MULTIDOTTING --------------------
-        {{
-          { "589",{ "!modifier.last(589)", "@hysteria.calculateDot(589, 'mouseover')", "mouseover" }},
-          { "34914",{ "!modifier.last(34914)", "@hysteria.calculateDot(34914, 'mouseover')", "mouseover" }},
-          { "589",{ "!modifier.last(589)", "@hysteria.calculateDot(589, 'focus')", "focus" }},
-          { "34914",{ "!modifier.last(34914)", "@hysteria.calculateDot(34914, 'focus')", "focus" }},
-        },{ 
-            "@hysteria.validate(VT, 'Multi')"
-            "!player.moving",
-            "modifier.multitarget"
-        }},
-	-------------------- MULTIDOTTING --------------------
-	{"2944", {
-		"player.shadoworbs = 3",
-		(function()return hysteria.calculateDot(DP, "target") end),
-		"@hysteria.validate(DP, 'target')"
+		{"589", {"!modifier.last(589)", "@hysteria.calculateDot(589, 'target')"}},
+		{"34914", {"!modifier.last(34914)", "@hysteria.calculateDot(34914, 'target')"}},
+	},{ 
+		"@hysteria.validate(VT, 'target')",
+		"!player.moving"
 	}},
+	-------------------- BOSS DOTTING --------------------
+	{{
+		{"589", {"!modifier.last(589)", "@hysteria.calculateDot(SWP, 'boss1')", "boss1"}},
+		{"34914", {"!modifier.last(34914)", "@hysteria.calculateDot(VT, 'boss1')", "boss1"}},
+		{"589", {"!modifier.last(589)", "@hysteria.calculateDot(SWP, 'boss2')", "boss2"}},
+		{"34914", {"!modifier.last(34914)", "@hysteria.calculateDot(VT, 'boss2')", "boss2"}},
+		{"589", {"!modifier.last(589)", "@hysteria.calculateDot(SWP, 'boss3')", "boss3"}},
+		{"34914", {"!modifier.last(34914)", "@hysteria.calculateDot(VT, 'boss3')", "boss3"}},
+		{"589", {"!modifier.last(589)", "@hysteria.calculateDot(SWP, 'boss4')", "boss4"}},
+		{"34914", {"!modifier.last(34914)", "@hysteria.calculateDot(VT, 'boss4')", "boss4"}},
+		{"589", {"!modifier.last(589)","@hysteria.calculateDot(SWP, 'boss5')", "boss5"}},
+		{"34914", {"!modifier.last(34914)", "@hysteria.calculateDot(VT, 'boss5')", "boss5"}},
+	},{
+		"@hysteria.validate(VT, 'Multi')",
+		"!player.moving",
+		"toggle.bossDotting"
+	}},
+	-------------------- BOSS DOTTING --------------------
+	-------------------- MULTIDOTTING --------------------
+	{{
+		{"589",{"!modifier.last(589)", "@hysteria.calculateDot(589, 'mouseover')", "mouseover"}},
+		{"34914",{"!modifier.last(34914)", "@hysteria.calculateDot(34914, 'mouseover')", "mouseover"}},
+		{"589",{"!modifier.last(589)", "@hysteria.calculateDot(589, 'focus')", "focus"}},
+		{"34914",{"!modifier.last(34914)", "@hysteria.calculateDot(34914, 'focus')", "focus"}},
+	},{ 
+		"@hysteria.validate(VT, 'Multi')",
+		"!player.moving",
+		"modifier.multitarget"
+	}},
+	-------------------- MULTIDOTTING --------------------
 	{"73510", {
 		"player.spell(109186).exists",
 		"player.buff(87160).count = 2",
@@ -191,5 +194,9 @@ ProbablyEngine.rotation.register_custom(258, "Hysteria Priest", {
 	-- Out of Combat buffing
 	{"588", {"player.spell(588).exists", "!player.buff(588)"}},
 	{"21562", {"player.spell(21562).exists", "@hysteria.checkRaidBuff(2)"}},
-	{"15473", {"player.spell(15473).exists", "!player.buff(15473)"}}
+	{"15473", {"player.spell(15473).exists", "!player.buff(15473)"}},
+	
+	-- Test
+	{"48045", {"modifier.lshift", "@hysteria.validate(MSear, 'target')"}}
+	
 })
