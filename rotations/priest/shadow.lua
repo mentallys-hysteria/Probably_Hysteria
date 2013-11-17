@@ -11,9 +11,9 @@
 ]]
 ProbablyEngine.rotation.register_custom(258, "Hysteria Priest", {
 	-- In-combat rebuffing
-	{"588", "!player.buff(588)" },
-	{"21562", "@hysteria.checkRaidBuff(2)"},
-	{"15473", "!player.buff(15473)" },
+	{"588", {"player.spell(588).exists", "!player.buff(588)"}},
+	{"21562", {"player.spell(21562).exists", "@hysteria.checkRaidBuff(2)"}},
+	{"15473", {"player.spell(15473).exists", "!player.buff(15473)"}},
 	
 	-- Available Cooldowns
 	{{
@@ -22,10 +22,7 @@ ProbablyEngine.rotation.register_custom(258, "Hysteria Priest", {
 		{"26297", {"player.spell(26297).exists", "@hysteria.cancelChannel(26297)"}},
 		{"10060", {"player.spell(10060).exists", "@hysteria.cancelChannel(10060)"}},
 		{"#gloves"}
-	},{
-		"modifier.cooldowns",
-		"@hysteria.immunities"
-	}},
+	}, "modifier.cooldowns"},
 	
 	-- Single target rotation
 	{"32379", {
@@ -53,7 +50,7 @@ ProbablyEngine.rotation.register_custom(258, "Hysteria Priest", {
 		"player.buff(124430)",
 		"@hysteria.cancelChannel(MB)"
 	}},
-	--{"pause", "player.spell(8092).cooldown < 0.5"},
+	{"pause", "player.spell(8092).cooldown < 0.5"},
 	{"32379", {
 		"target.health <= 20",
 		"!modifier.last(32379)",
@@ -131,7 +128,7 @@ ProbablyEngine.rotation.register_custom(258, "Hysteria Priest", {
 	{"15407", "@hysteria.cancelChannel(MF)"}
 }, {
 	-- Out of Combat buffing
-	{"588", "!player.buff(588)" },
-	{"21562", "@hysteria.checkRaidBuff(2)"},
-	{"15473", "!player.buff(15473)" },
+	{"588", {"player.spell(588).exists", "!player.buff(588)"}},
+	{"21562", {"player.spell(21562).exists", "@hysteria.checkRaidBuff(2)"}},
+	{"15473", {"player.spell(15473).exists", "!player.buff(15473)"}}
 })
