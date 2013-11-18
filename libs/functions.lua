@@ -255,8 +255,11 @@ function hysteria.validate(unit, spell)
 		if not unit then return false end
 		if not UnitExists(unit) then return false end
 		if not IsSpellInRange(GetSpellName(spell), unit) == 1 then return false end
-		if UnitIsUnit("player", unit) then return false end
-		if not UnitCanAttack("player", unit) then return false end
+		
+		if unit ~= "player" then
+			if UnitIsUnit("player", unit) then return false end
+			if not UnitCanAttack("player", unit) then return false end
+		end
 		
 		-- Detect enemy immunities
 		if UnitBuffID(unit, 116994)
@@ -279,6 +282,8 @@ function hysteria.validate(unit, spell)
 		
 		-- Priests are a royal pain in the ass...
 		if select(2,UnitClass("player")) == "PRIEST" then
+			if spell == MDisp then RunMacroText("/stopcasting") CastSpellByName(GetSpellInfo(spell)) return true end
+			
 			-- Don't cancel Mind Sear
 			if UnitChannelInfo("player") == GetSpellInfo(MSear) then
 				if spell == MSear then CastSpellByName(GetSpellInfo(MSear)) return true
@@ -286,7 +291,7 @@ function hysteria.validate(unit, spell)
 			end
 			
 			-- Some spells have a higher priority, cancel right away
-			if spell == MB or spell == SWD or spell == MDisp or spell == Disp then CastSpellByName(GetSpellInfo(spell)) return true end
+			if spell == MB or spell == SWD or spell == Disp then CastSpellByName(GetSpellInfo(spell)) return true end
 			
 			-- Otherwise, interrupt channels after a tick
 			if playerChannel then
