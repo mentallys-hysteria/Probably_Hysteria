@@ -167,7 +167,7 @@ function hysteria.tempBuffs(threshold)
 	return false
 end
 
-function hysteria.calculateDot(spell, unit)
+function hysteria.calculateDot(unit, spell)
 	local id = UnitGUID(unit)
 	local tracker = hysteria.dot_tracker
 	local power = hysteria.dotPower(spell)
@@ -238,7 +238,7 @@ function hysteria.calculateDot(spell, unit)
 	end
 end
 
-function hysteria.validate(spell, unit)
+function hysteria.validate(unit, spell)
 	local unitCasting = UnitCastingInfo(unit)
 	local playerChannel = UnitChannelInfo("player")
 	local playerCasting = UnitCastingInfo("player")
@@ -254,7 +254,7 @@ function hysteria.validate(spell, unit)
 		if not exists then return false end
 		if not unit then return false end
 		if not UnitExists(unit) then return false end
-		if not IsSpellInRange(GetSpellName(spell), unit) or IsSpellInRange(GetSpellName(spell), unit) == 0 then return false end
+		if not IsSpellInRange(GetSpellName(spell), unit) == 1 then return false end
 		if UnitIsUnit("player", unit) then return false end
 		if not UnitCanAttack("player", unit) then return false end
 		
