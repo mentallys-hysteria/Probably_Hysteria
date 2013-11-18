@@ -128,7 +128,7 @@ elseif select(2,UnitClass("player")) == "WARLOCK" then
         SSE2 = 86211            -- Soul Swap: Exhale
         DI = 109773             -- Dark Intent
         MCore = 122351          -- Molten Core
-        BD = 117896             -- Backdraft
+        BD = 117828             -- Backdraft
         
         -- Hand of Gul'dan DoT component
         SFlame = 47960          -- Shadowflame
