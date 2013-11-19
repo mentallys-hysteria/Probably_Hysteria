@@ -268,6 +268,10 @@ function hysteria.validate(unit, spell)
 		end
 	end
 	
+	if not unit == "player" then
+           if UnitIsUnit("player", unit) then return false end
+	end
+	
 	if UnitExists(unit) and exists then
 		-- Priests are a royal pain in the ass...
 		if select(2,UnitClass("player")) == "PRIEST" then
