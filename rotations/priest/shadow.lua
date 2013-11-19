@@ -108,7 +108,12 @@ ProbablyEngine.rotation.register_custom(258, "Hysteria Priest", {
 		"player.spell(139139).exists",
 		"@hysteria.validate('target', MF)"
 	}},
-
+	---------------------------------------------------
+	{"589", {"@hysteria.calculateDot('target',589)","@hysteria.validate('target',589)"}, "target"},
+	{"34914", {"!player.moving","!modifier.last(34914)","@hysteria.calculateDot('target',34914)","@hysteria.validate('target',34914)"}, "target"},
+	--{"589", {"@hysteria.calculateDot('target', 589)", "@hysteria.validate('target', 589)"}},
+	--{"34914", {"!modifier.last(34914)", "@hysteria.calculateDot('target', 34914)", "@hysteria.validate('target', 34914)"}},
+	---------------------------------------------------
 	{"73510", {
 		"player.spell(109186).exists",
 		"player.buff(87160).count = 2",
@@ -148,9 +153,5 @@ ProbablyEngine.rotation.register_custom(258, "Hysteria Priest", {
 	-- Out of Combat buffing
 	{"588", {"player.spell(588).exists", "!player.buff(588)"}},
 	{"21562", {"player.spell(21562).exists", "@hysteria.checkRaidBuff(2)"}},
-	{"15473", {"player.spell(15473).exists", "!player.buff(15473)"}},
-	
-	-- Test
-	{"48045", {"modifier.lshift", "@hysteria.validate(MSear, 'target')"}}
-	
+	{"15473", {"player.spell(15473).exists", "!player.buff(15473)"}}
 })

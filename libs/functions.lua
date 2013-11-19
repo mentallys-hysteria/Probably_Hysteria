@@ -239,54 +239,47 @@ function hysteria.calculateDot(unit, spell)
 end
 
 function hysteria.validate(unit, spell)
+	-- Sanity checks
+	if not unit then return false end
+	if not spell then return false end
+	
+	-- Determine our unit.
+	local MultiUnits = {"mouseover","focus","boss1","boss2","boss3","boss4"}
+	for i=1,#MultiUnits do if unit == "Multi" then unit = MultiUnits[i] end end
+	
+	-- Local variables
 	local unitCasting = UnitCastingInfo(unit)
 	local playerChannel = UnitChannelInfo("player")
 	local playerCasting = UnitCastingInfo("player")
 	local castingTime = (select(7,GetSpellInfo(spell)))
 	local exists = ProbablyEngine.dsl.get("spell.exists")("player",spell)
-	local MultiUnits = {"mouseover","focus","boss1","boss2","boss3","boss4","boss5"}
+	local SpellLocks = {143343,138763,137457}
+	local Immunities = {116994,122540,123250,106062,110945,143593,143574}
 	
-    for i=1,#MultiUnits do
-		if unit == "Multi" then unit = MultiUnits[i] end
-		
-		-- Sanity checks
-		if not spell then return false end
-		if not exists then return false end
-		if not unit then return false end
-		if not UnitExists(unit) then return false end
-		if not IsSpellInRange(GetSpellName(spell), unit) == 1 then return false end
-		
-		if unit ~= "player" then
-			if UnitIsUnit("player", unit) then return false end
-			if not UnitCanAttack("player", unit) then return false end
+	-- Detect Immunities
+	for i=1,#Immunities do
+		if UnitBuffID(unit, Immunities[i]) then return false end
+	end
+	
+	-- Detect interrupt/spell-lock
+	for i=1,#SpellLocks do
+		if unitCasting and unitCasting == GetSpellInfo(SpellLocks[i]) then
+			if playerChannel or playerCasting then SpellStopCasting() return false end
 		end
-		
-		-- Detect enemy immunities
-		if UnitBuffID(unit, 116994)
-			or UnitBuffID(unit, 122540)
-			or UnitBuffID(unit, 123250)
-			or UnitBuffID(unit, 106062)
-			or UnitBuffID(unit, 110945)
-			or UnitBuffID(unit, 143593)
-			or UnitBuffID(unit, 143574)
-		then return false end
-		
-		-- Detect interrupt/spell-lock
-		if unitCasting and (unitCasting == GetSpellInfo(138763) or unitCasting == GetSpellInfo(137457) or unitCasting == GetSpellInfo(143343)) then
-			if playerChannel or playerCasting then
-				RunMacroText("/stopcasting")
-				return false
-			end
-			return false
-		end
-		
+	end
+	
+	if UnitExists(unit) and exists then
 		-- Priests are a royal pain in the ass...
 		if select(2,UnitClass("player")) == "PRIEST" then
-			if spell == MDisp then RunMacroText("/stopcasting") CastSpellByName(GetSpellInfo(spell)) return true end
+		
+			-- Mass Dispel needs to be reactive!
+			if spell == MDisp then RunMacroText("/stopcasting") CastSpellByName(GetSpellInfo(MDisp)) return true end
 			
-			-- Don't cancel Mind Sear
-			if UnitChannelInfo("player") == GetSpellInfo(MSear) then
-				if spell == MSear then CastSpellByName(GetSpellInfo(MSear)) return true
+			-- Shadow AoE
+			if playerCasting or (playerChannel ~= GetSpellInfo(MSear)) then
+				if spell == MSear then CastSpellByName(GetSpellInfo(spell)) return true end
+			else
+				if spell == MSear then CastSpellByName(GetSpellInfo(spell)) return true
 				else return false end
 			end
 			
@@ -304,7 +297,7 @@ function hysteria.validate(unit, spell)
 				return false
 			else return true end
 		else return true end
-	end
+	else return false end
 end
 
 -- Register library
