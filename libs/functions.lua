@@ -175,6 +175,7 @@ function hysteria.calculateDot(unit, spell)
 	-- Shadow Word: Pain
 	if spell == 589 then
 		local shadowWordPain = select(7,UnitDebuffID(unit,SWP,"PLAYER"))
+		local GCD = hysteria.Round(1.5/((UnitSpellHaste("player")/100)+1),2)
 		local tick_every = hysteria.Round(3/(1+(UnitSpellHaste("player")/100)),2)
 		local max_timer = hysteria.Round(hysteria.PowerRound(18/(3/(1+(UnitSpellHaste("player")/100))))*(3/(1+(UnitSpellHaste("player")/100))),2)
 		
@@ -190,9 +191,9 @@ function hysteria.calculateDot(unit, spell)
 						return false
 					else
 						if power > tracker[i].swpPower then
-							if (added_ticks >= remaining_ticks) or hysteria.tempBuffs(tick_every+2) then return true else return false end
+							if (added_ticks >= remaining_ticks) or hysteria.tempBuffs(1+GCD) then return true else return false end
 						end
-						if shadowWordPain - GetTime() < tick_every+1 then return true else return false end
+						if shadowWordPain - GetTime() < tick_every+GCD then return true else return false end
 					end
 				end
 			end
@@ -218,9 +219,9 @@ function hysteria.calculateDot(unit, spell)
 						return false
 					else
 						if power > tracker[i].vtPower then
-							if (added_ticks >= remaining_ticks) or hysteria.tempBuffs(GCD+tick_every+1) then return true else return false end
+							if (added_ticks >= remaining_ticks) or hysteria.tempBuffs(tick_every+GCD+2) then return true else return false end
 						end
-						if vampiricTouch - GetTime() <= GCD+tick_every+1 then return true else return false end
+						if vampiricTouch - GetTime() <= tick_every+GCD+2 then return true else return false end
 					end
 				end
 			end
@@ -277,7 +278,7 @@ function hysteria.validate(unit, spell)
 		if select(2,UnitClass("player")) == "PRIEST" then
 		
 			-- Mass Dispel needs to be reactive!
-			if spell == MDisp then RunMacroText("/stopcasting") CastSpellByName(GetSpellInfo(MDisp)) return true end
+			if spell == MDisp or spell == Cascade or spell == Star or spell == Halo then RunMacroText("/stopcasting") CastSpellByName(GetSpellInfo(MDisp)) return true end
 			
 			-- Shadow AoE
 			if playerCasting or (playerChannel ~= GetSpellInfo(MSear)) then

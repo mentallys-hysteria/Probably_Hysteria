@@ -62,6 +62,36 @@ ProbablyEngine.rotation.register_custom(258, "Hysteria Priest", {
 	-- Aoe Rotation
 	{"48045", {"modifier.lshift", "@hysteria.validate('target', MSear)"}},
 	
+	----- Toggles -----
+	{"120644", {
+		"modifier.lalt",
+		"player.spell(120517).exists",
+		(function()
+			if IsPlayerSpell(139139) then
+				if UnitDebuff("target",GetSpellInfo(DP),"PLAYER") then return false else return true end
+			else return true end end),
+		"@hysteria.validate('target', Halo)"
+	}},
+	{"121135", {
+		"modifier.lalt",
+		"player.spell(121135).exists",
+		(function()
+			if IsPlayerSpell(139139) then
+				if UnitDebuff("target",GetSpellInfo(DP),"PLAYER") then return false else return true end
+			else return true end end),
+		"@hysteria.validate('target', Cascade)"
+	}},
+	{"110744", {
+		"modifier.lalt",
+		"player.spell(110744).exists",
+		(function()
+			if IsPlayerSpell(139139) then
+				if UnitDebuff("target",GetSpellInfo(DP),"PLAYER") then return false else return true end
+			else return true end end),
+		"@hysteria.validate('target', Star)"
+	}},
+	-------------------
+	
 	-- Single target rotation
 	{"32379", {
 		"target.health <= 20",
@@ -108,41 +138,33 @@ ProbablyEngine.rotation.register_custom(258, "Hysteria Priest", {
 		"player.spell(139139).exists",
 		"@hysteria.validate('target', MF)"
 	}},
-	---------------------------------------------------
+	------------------ TARGET DOTTING ------------------
 	{"589", {"@hysteria.calculateDot('target',589)","@hysteria.validate('target',589)"}, "target"},
 	{"34914", {"!player.moving","!modifier.last(34914)","@hysteria.calculateDot('target',34914)","@hysteria.validate('target',34914)"}, "target"},
-	--{"589", {"@hysteria.calculateDot('target', 589)", "@hysteria.validate('target', 589)"}},
-	--{"34914", {"!modifier.last(34914)", "@hysteria.calculateDot('target', 34914)", "@hysteria.validate('target', 34914)"}},
-	---------------------------------------------------
+	------------------- MULTI-DOTTING ------------------
+	{{
+		{"589",{"@hysteria.calculateDot('boss1',589)","toggle.bossDotting"},"boss1"},
+		{"589",{"@hysteria.calculateDot('boss2',589)","toggle.bossDotting"},"boss2"},
+		{"589",{"@hysteria.calculateDot('boss3',589)","toggle.bossDotting"},"boss3"},
+		{"589",{"@hysteria.calculateDot('boss4',589)","toggle.bossDotting"},"boss4"},
+		{"589",{"@hysteria.calculateDot('focus',589)","modifier.multitarget"},"focus"},
+		{"589",{"@hysteria.calculateDot('mouseover',589)","modifier.multitarget"},"mouseover"}
+	}, "@hysteria.validate('Multi',589)"},
+	{{
+		{"34914",{"!player.moving","!modifier.last(34914)","@hysteria.calculateDot('boss1',34914)","toggle.bossDotting"},"boss1"},
+		{"34914",{"!player.moving","!modifier.last(34914)","@hysteria.calculateDot('boss2',34914)","toggle.bossDotting"},"boss2"},
+		{"34914",{"!player.moving","!modifier.last(34914)","@hysteria.calculateDot('boss3',34914)","toggle.bossDotting"},"boss3"},
+		{"34914",{"!player.moving","!modifier.last(34914)","@hysteria.calculateDot('boss4',34914)","toggle.bossDotting"},"boss4"},
+		{"34914",{"!player.moving","!modifier.last(34914)","@hysteria.calculateDot('focus',34914)","modifier.multitarget"},"focus"},
+		{"34914",{"!player.moving","!modifier.last(34914)","@hysteria.calculateDot('mouseover',34914)","modifier.multitarget"},"mouseover"}
+	},"@hysteria.validate('Multi',34914)"},
+	----------------------------------------------------
 	{"73510", {
 		"player.spell(109186).exists",
 		"player.buff(87160).count = 2",
 		"@hysteria.validate('target', MS)"
 	}},
-	{"120644", {
-		"player.spell(120517).exists",
-		(function()
-			if IsPlayerSpell(139139) then
-				if UnitDebuff("target",GetSpellInfo(DP),"PLAYER") then return false else return true end
-			else return true end end),
-		"@hysteria.validate('target', Halo)"
-	}},
-	{"121135", {
-		"player.spell(121135).exists",
-		(function()
-			if IsPlayerSpell(139139) then
-				if UnitDebuff("target",GetSpellInfo(DP),"PLAYER") then return false else return true end
-			else return true end end),
-		"@hysteria.validate('target', Cascade)"
-	}},
-	{"110744", {
-		"player.spell(110744).exists",
-		(function()
-			if IsPlayerSpell(139139) then
-				if UnitDebuff("target",GetSpellInfo(DP),"PLAYER") then return false else return true end
-			else return true end end),
-		"@hysteria.validate('target', Star)"
-	}},
+	-------- Halo / Cascade / Divine Star ----------
 	{"73510", {
 		"player.spell(109186).exists",
 		"player.buff(87160).count = 1",
