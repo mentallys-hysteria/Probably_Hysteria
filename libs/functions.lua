@@ -269,9 +269,8 @@ function hysteria.validate(unit, spell)
 		end
 	end
 	
-	if not unit == "player" then
-           if UnitIsUnit("player", unit) then return false end
-	end
+	-- Detect that we're not trying to do something to ourselves unintentionally.
+	if unit ~= "player" then if UnitIsUnit("player", unit) then return false end end
 	
 	if UnitExists(unit) and exists then
 		-- Priests are a royal pain in the ass...
