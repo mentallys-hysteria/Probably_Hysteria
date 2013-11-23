@@ -49,6 +49,18 @@ function hysteria.checkRaidBuff(index)
 	return false
 end
 
+function hysteria.castcheck(spell, buff)
+        if buff == nil then return false end
+	if spell == nil then return false end
+	local buffName,_,_,_,_,_,buffTime = UnitBuffID("player",buff)
+	
+	if buffName then
+	   if select(7,GetSpellInfo(spell)) == 0 then return true end
+	   if buffTime - GetTime() > hysteria.Round(select(7,GetSpellInfo(spell))/1000,2) + 0.8 then return true else return false end
+	end
+	return false
+end
+
 -- Calculate DOT power returns
 function hysteria.dotPower(spellID)
 	-- Fetch our current stats.
