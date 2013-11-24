@@ -49,6 +49,7 @@ function hysteria.checkRaidBuff(index)
 	return false
 end
 
+-- Check if we can cast a spell before buff expires
 function hysteria.castcheck(spell, buff)
         if buff == nil then return false end
 	if spell == nil then return false end
@@ -231,7 +232,8 @@ function hysteria.calculateDot(unit, spell)
 						return false
 					else
 						if power > tracker[i].vtPower then
-							if (added_ticks >= remaining_ticks) or hysteria.tempBuffs(tick_every+GCD+2) then return true else return false end
+							if (added_ticks >= remaining_ticks) or hysteria.tempBuffs(tick_every+GCD+2) then
+							return true else return false end
 						end
 						if vampiricTouch - GetTime() <= tick_every+GCD+2 then return true else return false end
 					end
@@ -249,6 +251,90 @@ function hysteria.calculateDot(unit, spell)
 			if devouringPlague - GetTime() <= tick_every then return true else return false end
 		else return true end
 	end
+end
+
+function hysteria.clip(spell, unit)
+	local playerCasting = UnitCastingInfo("player")
+	local playerChannel = UnitChannelInfo("player")
+	
+	-- Abilities requiring reactive toggles
+	if spell == MDisp or spell == Cascade or spell == Star or spell == Halo then
+		RunMacroText("/stopcasting") CastSpellByName(GetSpellInfo(spell)) return true
+	end
+	
+	-- Pause while channelling Mind Sear
+	if playerCasting or (playerChannel ~= GetSpellInfo(MSear)) then
+		if spell == MSear then CastSpellByName(GetSpellInfo(spell)) return true end
+	else
+		if spell == MSear then CastSpellByName(GetSpellInfo(spell)) return true
+		else return false end
+	end
+	
+	-- Stop for Insanity
+	if IsPlayerSpell(139139) then
+		if not UnitDebuffID("target",DP,"PLAYER") and (playerChannel and playerChannel == GetSpellInfo(MFI)) then return false end
+	end
+	
+	-- Should break all channels
+	if spell == MB or spell == SWD or spell == Disp then CastSpellByName(GetSpellInfo(spell)) return true end
+	
+	-- Multi-dotting much?
+	if ProbablyEngine.dsl.get('modifier.multitarget')() then
+		if IsPlayerSpell(139139) then
+			if playerChannel ~= GetSpellInfo(MFI) or not UnitDebuffID("target",DP,"PLAYER") then
+				if spell == SWP or spell == VT then CastSpellByName(GetSpellInfo(spell),unit) return true end
+			end
+		else
+			if spell == SWP or spell == VT then CastSpellByName(GetSpellInfo(spell),unit) return true end
+		end
+	end
+	if ProbablyEngine.dsl.get('toggle')('bossDotting') then
+		if IsPlayerSpell(139139) then
+			if playerChannel ~= GetSpellInfo(MFI) or not UnitDebuffID("target",DP,"PLAYER") then
+				if spell == SWP or spell == VT then CastSpellByName(GetSpellInfo(spell),unit) return true end
+			end
+		else
+			if spell == SWP or spell == VT then CastSpellByName(GetSpellInfo(spell),unit) return true end
+		end
+	end
+	
+	-- Properly clip channels
+	if playerChannel then
+		if playerChannel == GetSpellInfo(MFI) then
+			if insanity.curTicks >= insanity.maxTicks - 1 then CastSpellByName(GetSpellInfo(spell)) return true end
+		end
+		if playerChannel == GetSpellInfo(MF) then
+			if mindFlay.curTicks >= mindFlay.maxTicks - 1 then CastSpellByName(GetSpellInfo(spell)) return true end
+		end
+		return false
+	else return true end
+end
+
+-- Fetch immunity events
+function hysteria.immunities(unit)
+	if not unit then return false end
+	if UnitExists(unit) then
+		if UnitBuff(unit,GetSpellInfo(116994))
+			or UnitBuff(unit,GetSpellInfo(122540))
+			or UnitBuff(unit,GetSpellInfo(123250))
+			or UnitBuff(unit,GetSpellInfo(106062))
+			or UnitBuff(unit,GetSpellInfo(110945))
+			or UnitBuff(unit,GetSpellInfo(143593))
+			or UnitBuff(unit,GetSpellInfo(143574))
+		then return false else return true end
+	else return false end
+end
+
+-- Fetch interrupt events
+function hysteria.interrupts(unit)
+	if not unit then return false end
+	if UnitCastingInfo(unit) and
+		(UnitCastingInfo(unit) == GetSpellInfo(143343) or UnitCastingInfo(unit) == GetSpellInfo(138763) or UnitCastingInfo(unit) == GetSpellInfo(137457)) then
+			if UnitCastingInfo("player") or UnitChannelInfo("player") then
+				RunMacroText("/stopcasting") return false
+			end
+			return false
+	else return true end
 end
 
 function hysteria.validate(unit, spell)
@@ -284,36 +370,7 @@ function hysteria.validate(unit, spell)
 	-- Detect that we're not trying to do something to ourselves unintentionally.
 	if unit ~= "player" then if UnitIsUnit("player", unit) then return false end end
 	
-	if UnitExists(unit) and exists then
-		-- Priests are a royal pain in the ass...
-		if select(2,UnitClass("player")) == "PRIEST" then
-		
-			-- Mass Dispel needs to be reactive!
-			if spell == MDisp or spell == Cascade or spell == Star or spell == Halo then RunMacroText("/stopcasting") CastSpellByName(GetSpellInfo(MDisp)) return true end
-			
-			-- Shadow AoE
-			if playerCasting or (playerChannel ~= GetSpellInfo(MSear)) then
-				if spell == MSear then CastSpellByName(GetSpellInfo(spell)) return true end
-			else
-				if spell == MSear then CastSpellByName(GetSpellInfo(spell)) return true
-				else return false end
-			end
-			
-			-- Some spells have a higher priority, cancel right away
-			if spell == MB or spell == SWD or spell == Disp then CastSpellByName(GetSpellInfo(spell)) return true end
-			
-			-- Otherwise, interrupt channels after a tick
-			if playerChannel then
-				if playerChannel == GetSpellInfo(MF) then
-					if mindFlay.curTicks >= mindFlay.maxTicks - 1 then CastSpellByName(GetSpellInfo(spell)) return true end
-				end
-				if playerChannel == GetSpellInfo(MFI) then
-					if insanity.curTicks >= insanity.maxTicks - 1 then CastSpellByName(GetSpellInfo(spell)) return true end
-				end
-				return false
-			else return true end
-		else return true end
-	else return false end
+	if UnitExists(unit) and exists then return true else return false end
 end
 
 -- Register library

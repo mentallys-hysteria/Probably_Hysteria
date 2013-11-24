@@ -2,7 +2,7 @@
 ## Title: Probably [|cff9482C9Hysteria|r]
 ## Notes: A ProbablyEngine Custom Profile Pack
 ## Author: Elizabeth "Mentally" Truehearth, Kink
-## Version 5.4.1.3
+## Version 5.4.1 r2.8
 ## Dependencies: Probably
 
 # Extra Files
@@ -11,5 +11,6 @@ libs\listener.lua
 libs\spellTable.lua
 
 # Rotations
-rotations\priest\shadow.lua
+rotations\priest\Shadow_Normal.lua
+rotations\priest\Shadow_Cleave.lua
 rotations\warlock\destruction.lua
