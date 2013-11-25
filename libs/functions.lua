@@ -150,7 +150,37 @@ function hysteria.dotPower(spellID)
 			end
 		else return 0 end
 	elseif select(2,UnitClass("player")) == "WARLOCK" then
-		if GetSpecialization() == 2 then
+		if GetSpecialization() == 1 then
+			bonus		= (1+crit/100)*(1+(mastery*3.1)/100)
+			tick_every	= 2/(1+(haste/100))
+			
+			-- Agony
+			if spellID == 980 then
+				ticks		= hysteria.PowerRound(24/tick_every)
+				duration	= ticks*tick_every
+				damage		= ticks*(280+spd*0.26)*bonus*dmg_buff
+				dps			= hysteria.PowerRound(damage/duration)
+				dot_power	= hysteria.PowerRound(dps/100)/10
+			end
+			
+			-- Corruption
+			if spellID == 146739 then
+				ticks		= hysteria.PowerRound(18/tick_every)
+				duration	= ticks*tick_every
+				damage		= (1926+ticks*spd*0.2)*bonus*dmg_buff
+				dps			= hysteria.PowerRound(damage/duration)
+				dot_power	= hysteria.PowerRound(dps/100)/10
+			end
+			
+			-- Unstable Affliction
+			if spellID == 30108 then
+				ticks		= hysteria.PowerRound(14/tick_every)
+				duration	= ticks*tick_every
+				damage		= (1792+ticks*spd*0.24)*bonus*dmg_buff
+				dps			= hysteria.PowerRound(damage/duration)
+				dot_power	= hysteria.PowerRound(dps/100)/10
+			end
+		elseif GetSpecialization() == 2 then
 			-- Doom
 			if spellID == 603 then
 				bonus		= (1+crit/100)*(1+(mastery*3)/100)
@@ -259,7 +289,9 @@ function hysteria.clip(spell, unit)
 	
 	-- Abilities requiring reactive toggles
 	if spell == MDisp or spell == Cascade or spell == Star or spell == Halo then
-		RunMacroText("/stopcasting") CastSpellByName(GetSpellInfo(spell)) return true
+		if ProbablyEngine.dsl.get("spell.cooldown")("player",spell) == 0 then
+			RunMacroText("/stopcasting") CastSpellByName(GetSpellInfo(spell)) return true
+		end
 	end
 	
 	-- Pause while channelling Mind Sear

@@ -8,8 +8,7 @@
         Help, suggestions and discussion thread:
         https://probablyengine.com/forum/viewtopic.php?id=107
         ==============================================================
-        Updated: 12:40 AM 03.11.2013
 ]]
-ProbablyEngine.rotation.register_custom(258, "Hysteria Destruction", {
+ProbablyEngine.rotation.register_custom(267, "Hysteria Destruction", {
         -- Rotation
 })
