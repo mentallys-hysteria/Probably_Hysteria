@@ -283,7 +283,7 @@ function hysteria.calculateDot(unit, spell)
 	end
 end
 
-function hysteria.clip(spell, unit)
+function hysteria.clip(unit, spell)
 	local playerCasting = UnitCastingInfo("player")
 	local playerChannel = UnitChannelInfo("player")
 	
@@ -363,7 +363,9 @@ function hysteria.interrupts(unit)
 	if UnitCastingInfo(unit) and
 		(UnitCastingInfo(unit) == GetSpellInfo(143343) or UnitCastingInfo(unit) == GetSpellInfo(138763) or UnitCastingInfo(unit) == GetSpellInfo(137457)) then
 			if UnitCastingInfo("player") or UnitChannelInfo("player") then
-				RunMacroText("/stopcasting") return false
+				if not UnitBuffID("player",31821) or not UnitBuffID("player",64364) then
+					RunMacroText("/stopcasting") return false
+				end
 			end
 			return false
 	else return true end
