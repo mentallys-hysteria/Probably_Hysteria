@@ -15,13 +15,6 @@ if not mindFlay then mindFlay = {} end
 if not insanity then insanity = {} end
 if not hysteria.dot_tracker then hysteria.dot_tracker = {} end
 
--- Custom Buttons
-ProbablyEngine.toggle.create(
-	'bossDotting',
-	'Interface\\ICONS\\inv_jewelry_orgrimmarraid_trinket_13',
-	'Boss-dotting',
-	"Enable/Disable automatic dotting\n of all boss units in range!")
-
 -- Convert Spell ID to Spell Name
 function UnitBuffID(unit, spell, filter)
 	if not unit or unit == nil or not UnitExists(unit) then return false end
@@ -363,7 +356,9 @@ function hysteria.interrupts(unit)
 	if UnitCastingInfo(unit) and
 		(UnitCastingInfo(unit) == GetSpellInfo(143343) or UnitCastingInfo(unit) == GetSpellInfo(138763) or UnitCastingInfo(unit) == GetSpellInfo(137457)) then
 			if UnitCastingInfo("player") or UnitChannelInfo("player") then
-				RunMacroText("/stopcasting") return false
+				if not UnitBuffID("player",31821) or not UnitBuffID("player",64364) then
+					RunMacroText("/stopcasting") return false
+				end
 			end
 			return false
 	else return true end

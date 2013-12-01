@@ -10,170 +10,112 @@
 	==============================================================
 ]]
 ProbablyEngine.rotation.register_custom(258, "Hysteria Priest", {
-	-- In-combat rebuffing
-	{"588", {"player.spell(588).exists", "!player.buff(588)"}},
-	{"21562", {"player.spell(21562).exists", "@hysteria.checkRaidBuff(2)"}},
-	{"15473", {"player.spell(15473).exists", "!player.buff(15473)"}},
+	-- In-combat buffing. Just in case we die.
+	{"588", {"player.spell(588).exists","!player.buff(588)"}, "player"},
+	{"21562", {"player.spell(21562).exists","@hysteria.checkRaidBuff(2)"}, "player"},
+	{"15473", {"player.spell(15473).exists","!player.buff(15473)"}, "player"},
 	
-	-- Movement speed increase, only when talented!
-	{"17", {
-		"player.moving",
-		"player.spell(64129).exists"
-	}},
+	-- Body and Soul; Activate on movement when talented
+	{"17", {"player.moving","player.spell(64129).exists"}, "player"},
 	
-	-- Defensive abilities
-	--{"#Healthstone", "player.health <= 40"},
-	{"15286", {
-		"player.health <= 40",
-		"player.shadoworbs = 3",
-		"player.spell(15286).cooldown = 0",
-		"@hysteria.validate('player', Embrace)"
-	}},
-	{"586", {
-		"player.threat > 95",
-		"player.spell(586).cooldown = 0",
-		"@hysteria.validate('player', Fade)"
-	}},
-	{"19236", {
-		"player.health <= 40",
-		"player.spell(19236).cooldown = 0",
-		"@hysteria.validate('player', DPrayer)"
-	}},
-	{"47585", {
-		"modifier.rshift",
-		"player.spell(47585).cooldown = 0",
-		"@hysteria.validate('player', Disp)"
-	}},
-	{"32375",{
-		"modifier.ralt",
-		"player.spell(32375).cooldown = 0",
-		"@hysteria.validate('player', MDisp)"
-	}, "ground"},
+	-- Defensive Abilities, just for when things go Oh-shit!
+	{"#5512", "player.health <= 40", "player"},
+	{"15286", {"player.health <= 40","player.shadoworbs = 3","player.spell(15286).cooldown = 0","@hysteria.clip(Embrace)"}, "player"},
+	{"586", {"player.threat >= 95","player.spell(586).cooldown = 0","@hysteria.clip(Fade)"}, "player"},
+	{"19236", {"player.health <= 40","player.spell(19236).cooldown = 0","@hysteria.clip(DPrayer)"}, "player"},
+	{"47585", {"modifier.rshift","player.spell(47585).cooldown = 0","@hysteria.clip(Disp)"}, "player"},
+	{"32375", {"modifier.ralt","player.spell(32375).cooldown = 0","@hysteria.clip(MDisp)"}, "ground"},
 	
 	-- Available Cooldowns
 	{{
-		{"34433", "@hysteria.validate('target', 34433)"},
-		{"121279", {"player.spell(121279).exists", "@hysteria.validate('target', 121279)"}},
-		{"26297", {"player.spell(26297).exists", "@hysteria.validate('target', 26297)"}},
-		{"10060", {"player.spell(10060).exists", "@hysteria.validate('target', 10060)"}},
+		{"34433", "@hysteria.clip(34433)", "target"},
+		{"121279", {"player.spell(121279).exists","@hysteria.clip(121279)"}, "player"},
+		{"26297", {"player.spell(26297).exists","@hysteria.clip(26297)"}, "player"},
+		{"10060", {"player.spell(10060).exists","@hysteria.clip(10060)"}, "player"},
 		{"#gloves"}
-	}, "modifier.cooldowns"},
+	}, {"modifier.cooldowns"}},
 	
-	-- Aoe Rotation
-	{"48045", {"modifier.lshift", "@hysteria.validate('target', MSear)"}},
+	-- Shadow AoE; Mind Sear it.
+	{"48045", {"modifier.lshift","@hysteria.clip(MSear)"}, "target"},
 	
-	----- Toggles -----
+	-- Automated Level 90 Talent abilities can be...bad.. Toggle it!
 	{"120644", {
 		"modifier.lalt",
 		"player.spell(120517).exists",
-		(function()
-			if IsPlayerSpell(139139) then
-				if UnitDebuff("target",GetSpellInfo(DP),"PLAYER") then return false else return true end
-			else return true end end),
-		"@hysteria.validate('target', Halo)"
+		"@hysteria.clip(Halo)"
 	}},
 	{"121135", {
 		"modifier.lalt",
 		"player.spell(121135).exists",
-		(function()
-			if IsPlayerSpell(139139) then
-				if UnitDebuff("target",GetSpellInfo(DP),"PLAYER") then return false else return true end
-			else return true end end),
-		"@hysteria.validate('target', Cascade)"
+		"@hysteria.clip(Cascade)"
 	}},
 	{"110744", {
 		"modifier.lalt",
 		"player.spell(110744).exists",
-		(function()
-			if IsPlayerSpell(139139) then
-				if UnitDebuff("target",GetSpellInfo(DP),"PLAYER") then return false else return true end
-			else return true end end),
-		"@hysteria.validate('target', Star)"
+		"@hysteria.clip(Star)"
 	}},
-	-------------------
 	
-	-- Single target rotation
-	{"32379", {
-		"target.health <= 20",
-		"!modifier.last(32379)",
-		"@hysteria.validate('target', SWD)"
-	}},
-	{"2944", {
-		"target.health <= 20",
-		"player.shadoworbs = 3",
-		"player.spell(32379).cooldown < 1.5",
-		"@hysteria.validate('target', DP)"
-	}},
-	{"2944", {
-		"target.health <= 20",
-		"player.shadoworbs = 3",
-		"player.spell(8092).cooldown < 1.5",
-		"@hysteria.validate('target', DP)"
-	}},
-	{"2944", {
-		"player.shadoworbs = 3",
-		"@hysteria.calculateDot('target', DP)",
-		"@hysteria.validate('target', DP)"
-	}},
-	{"8092", {
-		"!player.moving",
-		"@hysteria.validate('target', MB)"
-	}},
-	{"8092", {
-		"player.buff(124430)",
-		"@hysteria.validate('target', MB)"
-	}},
-	{"32379", {
-		"target.health <= 20",
-		"!modifier.last(32379)",
-		(function()
-			if IsPlayerSpell(139139) then
-				if UnitDebuff("target",GetSpellInfo(DP),"PLAYER") then return false else return true end
-			else return true end end),
-		"@hysteria.validate('target', SWD)"
-	}},
-	{"15407", {
-		"!player.moving",
-		"target.debuff(2944)",
-		"player.spell(139139).exists",
-		"@hysteria.validate('target', MF)"
-	}},
-	------------------ TARGET DOTTING ------------------
-	{"589", {"@hysteria.calculateDot('target',589)","@hysteria.validate('target',589)"}, "target"},
-	{"34914", {"!player.moving","!modifier.last(34914)","@hysteria.calculateDot('target',34914)","@hysteria.validate('target',34914)"}, "target"},
-	------------------- MULTI-DOTTING ------------------
+	-- Shadow Priest Standard Rotation
+	-- Should we..? Yes we should..
 	{{
-		{"589",{"@hysteria.calculateDot('boss1',589)","toggle.bossDotting"},"boss1"},
-		{"589",{"@hysteria.calculateDot('boss2',589)","toggle.bossDotting"},"boss2"},
-		{"589",{"@hysteria.calculateDot('boss3',589)","toggle.bossDotting"},"boss3"},
-		{"589",{"@hysteria.calculateDot('boss4',589)","toggle.bossDotting"},"boss4"},
-		{"589",{"@hysteria.calculateDot('focus',589)","modifier.multitarget"},"focus"},
-		{"589",{"@hysteria.calculateDot('mouseover',589)","modifier.multitarget"},"mouseover"}
-	}, "@hysteria.validate('Multi',589)"},
-	{{
-		{"34914",{"!player.moving","!modifier.last(34914)","@hysteria.calculateDot('boss1',34914)","toggle.bossDotting"},"boss1"},
-		{"34914",{"!player.moving","!modifier.last(34914)","@hysteria.calculateDot('boss2',34914)","toggle.bossDotting"},"boss2"},
-		{"34914",{"!player.moving","!modifier.last(34914)","@hysteria.calculateDot('boss3',34914)","toggle.bossDotting"},"boss3"},
-		{"34914",{"!player.moving","!modifier.last(34914)","@hysteria.calculateDot('boss4',34914)","toggle.bossDotting"},"boss4"},
-		{"34914",{"!player.moving","!modifier.last(34914)","@hysteria.calculateDot('focus',34914)","modifier.multitarget"},"focus"},
-		{"34914",{"!player.moving","!modifier.last(34914)","@hysteria.calculateDot('mouseover',34914)","modifier.multitarget"},"mouseover"}
-	},"@hysteria.validate('Multi',34914)"},
-	----------------------------------------------------
-	{"73510", {
-		"player.spell(109186).exists",
-		"player.buff(87160).count = 2",
-		"@hysteria.validate('target', MS)"
-	}},
-	-------- Halo / Cascade / Divine Star ----------
-	{"73510", {
-		"player.spell(109186).exists",
-		"player.buff(87160).count = 1",
-		"@hysteria.validate('target', MS)"
-	}},
-	{"15407", "@hysteria.validate('target', MF)"}
+		{"32379", {"target.health <= 20","!modifier.last(32379)","@hysteria.clip(SWD)"}, "target"},
+		
+		-- Only invoke when we're starting with Orbs
+		{"589", {"!target.debuff(589)","player.shadoworbs = 3","@hysteria.clip(589)"}, "target"},
+		{"34914", {"!player.moving","!modifier.last(34914)","!target.debuff(34914)","player.shadoworbs = 3","@hysteria.clip(34914)"}, "target"},
+		
+		{"2944", {"player.shadoworbs = 3","@hysteria.calculateDot('target', DP)","@hysteria.clip(DP)"}, "target"},
+		{"8092", {"!player.moving","@hysteria.clip(MB)"}, "target"},
+		{"8092", {"player.buff(124430)","@hysteria.clip(MB)"}, "target"},
+		{"32379", {
+			"target.health <= 20",
+			"!modifier.last(32379)",
+			(function()
+				if IsPlayerSpell(139139) then
+					if UnitDebuffID("target",PD,"PLAYER") then return false else return true end
+				else return true end end),
+			"@hysteria.clip(SWD)"
+		}, "target"},
+		{"15407", {"!player.moving","target.debuff(2944)","player.spell(139139).exists","@hysteria.clip(MF)"}, "target"},
+		
+		-- Boss Dotting
+		{{
+			{"34914", {"!player.moving","!modifier.last(34914)","@hysteria.immunities('Boss1')","@hysteria.interrupts('Boss1')","@hysteria.calculateDot('Boss1',34914)","@hysteria.clip(34914,'Boss1')","spell(34914).range"},"Boss1"},
+			{"34914", {"!player.moving","!modifier.last(34914)","@hysteria.immunities('Boss2')","@hysteria.interrupts('Boss2')","@hysteria.calculateDot('Boss2',34914)","@hysteria.clip(34914,'Boss2')","spell(34914).range"},"Boss2"},
+			{"34914", {"!player.moving","!modifier.last(34914)","@hysteria.immunities('Boss3')","@hysteria.interrupts('Boss3')","@hysteria.calculateDot('Boss3',34914)","@hysteria.clip(34914,'Boss3')","spell(34914).range"},"Boss3"},
+			{"34914", {"!player.moving","!modifier.last(34914)","@hysteria.immunities('Boss4')","@hysteria.interrupts('Boss4')","@hysteria.calculateDot('Boss4',34914)","@hysteria.clip(34914,'Boss4')","spell(34914).range"},"Boss4"},
+			{"589", {"player.spell(589).exists","@hysteria.immunities('Boss1')","@hysteria.calculateDot('Boss1',589)","@hysteria.clip(589,'Boss1')","spell(589).range"},"Boss1"},
+			{"589", {"player.spell(589).exists","@hysteria.immunities('Boss2')","@hysteria.calculateDot('Boss2',589)","@hysteria.clip(589,'Boss2')","spell(589).range"},"Boss2"},
+			{"589", {"player.spell(589).exists","@hysteria.immunities('Boss3')","@hysteria.calculateDot('Boss3',589)","@hysteria.clip(589,'Boss3')","spell(589).range"},"Boss3"},
+			{"589", {"player.spell(589).exists","@hysteria.immunities('Boss4')","@hysteria.calculateDot('Boss4',589)","@hysteria.clip(589,'Boss4')","spell(589).range"},"Boss4"},
+		}, "toggle.bossDotting"},
+		
+		-- Dotting
+		{"589", {"@hysteria.calculateDot('target',589)","@hysteria.clip(589)"}, "target"},
+		{"34914", {"!player.moving","!modifier.last(34914)","@hysteria.calculateDot('target',34914)","@hysteria.clip(34914)"}, "target"},
+		
+		-- Multidotting
+		{{
+			{"34914", {"!player.moving","!modifier.last(34914)","@hysteria.immunities('focus')","@hysteria.interrupts('focus')","@hysteria.calculateDot('focus',34914)","@hysteria.clip(34914,'focus')"},"focus"},
+			{"34914", {"!player.moving","!modifier.last(34914)","@hysteria.immunities('mouseover')","@hysteria.interrupts('mouseover')","@hysteria.calculateDot('mouseover',34914)","@hysteria.clip(34914,'mouseover')"},"mouseover"},
+			{"589", {"player.spell(589).exists","@hysteria.immunities('focus')","@hysteria.calculateDot('focus',589)","@hysteria.clip(589,'focus')"},"focus"},
+			{"589", {"player.spell(589).exists","@hysteria.immunities('mouseover')","@hysteria.calculateDot('mouseover',589)","@hysteria.clip(589,'mouseover')"},"mouseover"},
+		}, "modifier.multitarget"},
+		
+		{"73510", {"player.spell(109186).exists","player.buff(87160).count = 2","@hysteria.clip(MS)"}, "target"},
+		{"73510", {"player.spell(109186).exists","player.buff(87160).count = 1","@hysteria.clip(MS)"}, "target"},
+		{"15407", "@hysteria.clip(MF)", "target"}		
+	}, {"player.buff(15473)", "@hysteria.immunities('target')","@hysteria.interrupts('target')"}}
 }, {
 	-- Out of Combat buffing
-	{"588", {"player.spell(588).exists", "!player.buff(588)"}},
-	{"21562", {"player.spell(21562).exists", "@hysteria.checkRaidBuff(2)"}},
-	{"15473", {"player.spell(15473).exists", "!player.buff(15473)"}}
-})
+	{"588", {"player.spell(588).exists", "!player.buff(588)"}, "player"},
+	{"21562", {"player.spell(21562).exists", "@hysteria.checkRaidBuff(2)"}, "player"},
+	{"15473", {"player.spell(15473).exists", "!player.buff(15473)"}, "player"}
+}, function()
+	-- Boss Dotting
+	ProbablyEngine.toggle.create(
+		'bossDotting',
+		'Interface\\ICONS\\inv_jewelry_orgrimmarraid_trinket_13',
+		'Boss-dotting',
+	"Enable/Disable automatic dotting\n of all boss units in range!")
+end)
