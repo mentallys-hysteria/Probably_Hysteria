@@ -2,7 +2,7 @@
 ## Title: Probably [|cff9482C9Hysteria|r]
 ## Notes: A ProbablyEngine Custom Profile Pack
 ## Author: Elizabeth "Mentally" Truehearth, Kink
-## Version 5.4.1 r6
+## Version 5.4.1 r7
 ## Dependencies: Probably
 
 # Extra Files

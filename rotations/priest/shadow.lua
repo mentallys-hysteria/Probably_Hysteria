@@ -62,11 +62,11 @@ ProbablyEngine.rotation.register_custom(258, "Hysteria Priest", {
 		
 		-- Only invoke when we're starting with Orbs
 		{"589", {"!target.debuff(589)","player.shadoworbs = 3","@hysteria.clip(589)"}, "target"},
-		{"34914", {"!player.moving","!modifier.last(34914)","!target.debuff(34914)","player.shadoworbs = 3","@hysteria.clip(34914)"}, "target"},
+		{"34914", {"!player.moving","!modifier.last(34914)","!target.debuff(34914)","player.shadoworbs = 3","@hysteria.interrupts('target')","@hysteria.clip(34914)"}, "target"},
 		
 		{"2944", {"player.shadoworbs = 3","@hysteria.calculateDot('target', DP)","@hysteria.clip(DP)"}, "target"},
-		{"8092", {"!player.moving","@hysteria.clip(MB)"}, "target"},
-		{"8092", {"player.buff(124430)","@hysteria.clip(MB)"}, "target"},
+		{"8092", {"!player.moving","@hysteria.interrupts('target')","@hysteria.clip(MB)"}, "target"},
+		{"8092", {"player.buff(124430)","@hysteria.interrupts('target')","@hysteria.clip(MB)"}, "target"},
 		{"32379", {
 			"target.health <= 20",
 			"!modifier.last(32379)",
@@ -76,36 +76,36 @@ ProbablyEngine.rotation.register_custom(258, "Hysteria Priest", {
 				else return true end end),
 			"@hysteria.clip(SWD)"
 		}, "target"},
-		{"15407", {"!player.moving","target.debuff(2944)","player.spell(139139).exists","@hysteria.clip(MF)"}, "target"},
+		{"15407", {"!player.moving","target.debuff(2944)","player.spell(139139).exists","@hysteria.interrupts('target')","@hysteria.clip(MF)"}, "target"},
 		
 		-- Boss Dotting
 		{{
-			{"34914", {"!player.moving","!modifier.last(34914)","@hysteria.immunities('Boss1')","@hysteria.interrupts('Boss1')","@hysteria.calculateDot('Boss1',34914)","@hysteria.clip(34914,'Boss1')","spell(34914).range"},"Boss1"},
-			{"34914", {"!player.moving","!modifier.last(34914)","@hysteria.immunities('Boss2')","@hysteria.interrupts('Boss2')","@hysteria.calculateDot('Boss2',34914)","@hysteria.clip(34914,'Boss2')","spell(34914).range"},"Boss2"},
-			{"34914", {"!player.moving","!modifier.last(34914)","@hysteria.immunities('Boss3')","@hysteria.interrupts('Boss3')","@hysteria.calculateDot('Boss3',34914)","@hysteria.clip(34914,'Boss3')","spell(34914).range"},"Boss3"},
-			{"34914", {"!player.moving","!modifier.last(34914)","@hysteria.immunities('Boss4')","@hysteria.interrupts('Boss4')","@hysteria.calculateDot('Boss4',34914)","@hysteria.clip(34914,'Boss4')","spell(34914).range"},"Boss4"},
-			{"589", {"player.spell(589).exists","@hysteria.immunities('Boss1')","@hysteria.calculateDot('Boss1',589)","@hysteria.clip(589,'Boss1')","spell(589).range"},"Boss1"},
-			{"589", {"player.spell(589).exists","@hysteria.immunities('Boss2')","@hysteria.calculateDot('Boss2',589)","@hysteria.clip(589,'Boss2')","spell(589).range"},"Boss2"},
-			{"589", {"player.spell(589).exists","@hysteria.immunities('Boss3')","@hysteria.calculateDot('Boss3',589)","@hysteria.clip(589,'Boss3')","spell(589).range"},"Boss3"},
-			{"589", {"player.spell(589).exists","@hysteria.immunities('Boss4')","@hysteria.calculateDot('Boss4',589)","@hysteria.clip(589,'Boss4')","spell(589).range"},"Boss4"},
+			{"34914", {"!player.moving","!modifier.last(34914)","@hysteria.interrupts('Boss1')","@hysteria.calculateDot('Boss1',34914)","@hysteria.clip(34914,'Boss1')","spell(34914).range"},"Boss1"},
+			{"34914", {"!player.moving","!modifier.last(34914)","@hysteria.interrupts('Boss2')","@hysteria.calculateDot('Boss2',34914)","@hysteria.clip(34914,'Boss2')","spell(34914).range"},"Boss2"},
+			{"34914", {"!player.moving","!modifier.last(34914)","@hysteria.interrupts('Boss3')","@hysteria.calculateDot('Boss3',34914)","@hysteria.clip(34914,'Boss3')","spell(34914).range"},"Boss3"},
+			{"34914", {"!player.moving","!modifier.last(34914)","@hysteria.interrupts('Boss4')","@hysteria.calculateDot('Boss4',34914)","@hysteria.clip(34914,'Boss4')","spell(34914).range"},"Boss4"},
+			{"589", {"player.spell(589).exists","@hysteria.calculateDot('Boss1',589)","@hysteria.clip(589,'Boss1')","spell(589).range"},"Boss1"},
+			{"589", {"player.spell(589).exists","@hysteria.calculateDot('Boss2',589)","@hysteria.clip(589,'Boss2')","spell(589).range"},"Boss2"},
+			{"589", {"player.spell(589).exists","@hysteria.calculateDot('Boss3',589)","@hysteria.clip(589,'Boss3')","spell(589).range"},"Boss3"},
+			{"589", {"player.spell(589).exists","@hysteria.calculateDot('Boss4',589)","@hysteria.clip(589,'Boss4')","spell(589).range"},"Boss4"},
 		}, "toggle.bossDotting"},
 		
 		-- Dotting
 		{"589", {"@hysteria.calculateDot('target',589)","@hysteria.clip(589)"}, "target"},
-		{"34914", {"!player.moving","!modifier.last(34914)","@hysteria.calculateDot('target',34914)","@hysteria.clip(34914)"}, "target"},
+		{"34914", {"!player.moving","!modifier.last(34914)","@hysteria.calculateDot('target',34914)","@hysteria.interrupts('target')","@hysteria.clip(34914)"}, "target"},
 		
 		-- Multidotting
 		{{
-			{"34914", {"!player.moving","!modifier.last(34914)","@hysteria.immunities('focus')","@hysteria.interrupts('focus')","@hysteria.calculateDot('focus',34914)","@hysteria.clip(34914,'focus')"},"focus"},
-			{"34914", {"!player.moving","!modifier.last(34914)","@hysteria.immunities('mouseover')","@hysteria.interrupts('mouseover')","@hysteria.calculateDot('mouseover',34914)","@hysteria.clip(34914,'mouseover')"},"mouseover"},
-			{"589", {"player.spell(589).exists","@hysteria.immunities('focus')","@hysteria.calculateDot('focus',589)","@hysteria.clip(589,'focus')"},"focus"},
-			{"589", {"player.spell(589).exists","@hysteria.immunities('mouseover')","@hysteria.calculateDot('mouseover',589)","@hysteria.clip(589,'mouseover')"},"mouseover"},
+			{"34914", {"!player.moving","!modifier.last(34914)","@hysteria.interrupts('focus')","@hysteria.calculateDot('focus',34914)","@hysteria.clip(34914,'focus')"},"focus"},
+			{"34914", {"!player.moving","!modifier.last(34914)","@hysteria.interrupts('mouseover')","@hysteria.calculateDot('mouseover',34914)","@hysteria.clip(34914,'mouseover')"},"mouseover"},
+			{"589", {"player.spell(589).exists","@hysteria.calculateDot('focus',589)","@hysteria.clip(589,'focus')"},"focus"},
+			{"589", {"player.spell(589).exists","@hysteria.calculateDot('mouseover',589)","@hysteria.clip(589,'mouseover')"},"mouseover"},
 		}, "modifier.multitarget"},
 		
 		{"73510", {"player.spell(109186).exists","player.buff(87160).count = 2","@hysteria.clip(MS)"}, "target"},
 		{"73510", {"player.spell(109186).exists","player.buff(87160).count = 1","@hysteria.clip(MS)"}, "target"},
-		{"15407", "@hysteria.clip(MF)", "target"}		
-	}, {"player.buff(15473)", "@hysteria.immunities('target')","@hysteria.interrupts('target')"}}
+		{"15407", {"@hysteria.interrupts('target')","@hysteria.clip(MF)"}, "target"}		
+	}, {"player.buff(15473)", "@hysteria.immunities('target')"}}
 }, {
 	-- Out of Combat buffing
 	{"588", {"player.spell(588).exists", "!player.buff(588)"}, "player"},

@@ -287,6 +287,11 @@ function hysteria.clip(spell, unit)
 		end
 	end
 	
+	-- Override General Nazgrim. Dirty bastard!
+	if spell == VT or spell == SWP then
+		if UnitCreatureType(unit) == "Totem" then return false end
+	end
+	
 	-- Pause while channelling Mind Sear
 	if playerCasting or (playerChannel ~= GetSpellInfo(MSear)) then
 		if spell == MSear then CastSpellByName(GetSpellInfo(spell)) return true end
