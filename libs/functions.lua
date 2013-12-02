@@ -289,6 +289,7 @@ function hysteria.clip(spell, unit)
 	
 	-- Override General Nazgrim. Dirty bastard!
 	if spell == VT or spell == SWP then
+		if not unit then unit = "target" end
 		if UnitCreatureType(unit) == "Totem" then return false end
 	end
 	

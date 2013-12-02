@@ -22,7 +22,7 @@ ProbablyEngine.rotation.register_custom(258, "Hysteria Priest", {
 	{"#5512", "player.health <= 40", "player"},
 	{"15286", {"player.health <= 40","player.shadoworbs = 3","player.spell(15286).cooldown = 0","@hysteria.clip(Embrace)"}, "player"},
 	{"586", {"player.threat >= 95","player.spell(586).cooldown = 0","@hysteria.clip(Fade)"}, "player"},
-	{"19236", {"player.health <= 40","player.spell(19236).cooldown = 0","@hysteria.clip(DPrayer)"}, "player"},
+	--{"19236", {"player.health <= 40","player.spell(19236).cooldown = 0","@hysteria.clip(DPrayer)"}, "player"},
 	{"47585", {"modifier.rshift","player.spell(47585).cooldown = 0","@hysteria.clip(Disp)"}, "player"},
 	{"32375", {"modifier.ralt","player.spell(32375).cooldown = 0","@hysteria.clip(MDisp)"}, "ground"},
 	
